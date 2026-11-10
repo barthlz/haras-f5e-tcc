@@ -327,8 +327,10 @@ class _RecordEditorState extends State<RecordEditor> {
         setState(() => _referenceOptions[table] =
             rows.map((r) => Map<String, dynamic>.from(r)).toList());
       } catch (e) {
-        if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Erro ao buscar opções de $table: $e')));
+        }
       }
     }
   }
@@ -388,13 +390,15 @@ class _RecordEditorState extends State<RecordEditor> {
     final priceLocked = widget.module.id == 'animais' &&
       (field.key == 'billing_category' || field.key == 'base_monthly_amount') &&
       !widget.permissions.allows('valores','edit');
-    if (priceLocked) return ListTile(
+    if (priceLocked) {
+      return ListTile(
       title: Text(field.label),
       subtitle: Text(field.key == 'billing_category'
           ? (_references[field.key] ?? 'Padrão')
           : formatBrl(parseBrl(_controllers[field.key]?.text ?? '') ?? 1400)),
       trailing: const Icon(Icons.lock_outline),
     );
+    }
     if (field.type == FieldType.boolean) {
       return SwitchListTile(
         title: Text(field.label), value: _flags[field.key] ?? false,
@@ -533,8 +537,10 @@ class _RecordEditorState extends State<RecordEditor> {
       }
       if (mounted) Navigator.pop(context, true);
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Não foi possível salvar: $e')));
+      }
     } finally {
       if (mounted) setState(() => _saving = false);
     }

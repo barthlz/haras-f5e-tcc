@@ -144,8 +144,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
         _hasMore = next.length == _pageSize;
       });
     } catch (error) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro ao carregar mais pagamentos: $error')));
+      }
     } finally {
       if (mounted) setState(() => _loadingMore = false);
     }
@@ -351,8 +353,10 @@ class _ClientReportScreenState extends State<_ClientReportScreen> {
         _hasMore = next.length == _pageSize;
       });
     } catch (error) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Erro ao buscar pagamentos: $error')));
+      }
     } finally {
       if (mounted) setState(() => _loadingMore = false);
     }
@@ -363,13 +367,15 @@ class _ClientReportScreenState extends State<_ClientReportScreen> {
     appBar: AppBar(title: const Text('Relatório do cliente')),
     body: FutureBuilder<_ClientReportData>(future: _future,
       builder: (context, snapshot) {
-        if (snapshot.hasError) return Center(child: Padding(
+        if (snapshot.hasError) {
+          return Center(child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             Text('Erro ao carregar o cliente: ${snapshot.error}'),
             TextButton(onPressed: () => setState(() => _future = _fetch()),
                 child: const Text('Tentar novamente')),
           ])));
+        }
         if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
         final data = snapshot.requireData;
         final c = widget.client;

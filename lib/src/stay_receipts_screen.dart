@@ -114,8 +114,10 @@ class _StayReceiptsScreenState extends State<StayReceiptsScreen> {
       if (result.isEmpty) throw StateError('Sem permissão para excluir este recebimento.');
       if (mounted) setState(_reload);
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Não foi possível excluir: $e')));
+      }
     } finally {
       if (mounted) setState(() => _deleting = false);
     }
@@ -125,11 +127,13 @@ class _StayReceiptsScreenState extends State<StayReceiptsScreen> {
   Widget build(BuildContext context) => FutureBuilder<_ReceiptData>(
     future: _records,
     builder: (context, snapshot) {
-      if (snapshot.hasError) return Center(child: Padding(
+      if (snapshot.hasError) {
+        return Center(child: Padding(
         padding: const EdgeInsets.all(24), child: Column(mainAxisSize: MainAxisSize.min, children: [
           Text('Erro ao carregar recebimentos: ${snapshot.error}',textAlign:TextAlign.center),
           TextButton(onPressed: () => setState(_reload), child: const Text('Tentar novamente')),
         ])));
+      }
       if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
       final data = snapshot.requireData;
       final clientsById = {for (final c in data.clients) c['id'].toString():c['name'].toString()};
@@ -289,8 +293,10 @@ class _StayReceiptEditorState extends State<_StayReceiptEditor> {
       }
       if (mounted) Navigator.pop(context,true);
     } catch(e) {
-      if(mounted) ScaffoldMessenger.of(context).showSnackBar(
+      if(mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content:Text('Não foi possível salvar o recebimento: $e')));
+      }
     } finally {
       if (mounted) setState(() => _saving=false);
     }

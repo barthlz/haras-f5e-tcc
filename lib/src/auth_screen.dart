@@ -53,11 +53,15 @@ class _AuthScreenState extends State<AuthScreen> {
         );
       }
     } on AuthException catch (e) {
-      if (mounted) ScaffoldMessenger.of(context)
+      if (mounted) {
+        ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Falha de autenticação: ${e.message}')));
+      }
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context)
+      if (mounted) {
+        ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Erro: $e')));
+      }
     } finally {
       if (mounted) setState(() => _busy = false);
     }

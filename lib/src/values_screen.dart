@@ -77,8 +77,10 @@ class _ValuesScreenState extends State<ValuesScreen> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Valor atualizado. Cobranças do mês atual foram recalculadas.')));
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro ao atualizar valor: $e')));
+      }
     }
   }
 
@@ -89,12 +91,14 @@ class _ValuesScreenState extends State<ValuesScreen> {
     return FutureBuilder<List<Map<String, dynamic>>>(
       future: _prices,
       builder: (context, snapshot) {
-        if (snapshot.hasError) return Center(child: Column(
+        if (snapshot.hasError) {
+          return Center(child: Column(
           mainAxisSize: MainAxisSize.min, children: [
             Text('Erro ao carregar valores: ${snapshot.error}', textAlign: TextAlign.center),
             TextButton(onPressed: () => setState(_refresh), child: const Text('Tentar novamente')),
           ],
         ));
+        }
         if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
         return RefreshIndicator(
           onRefresh: () async { setState(_refresh); await _prices; },
