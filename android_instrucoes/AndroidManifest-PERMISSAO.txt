@@ -1,0 +1,7 @@
+Abra o arquivo gerado pelo Flutter:
+  android/app/src/main/AndroidManifest.xml
+
+Logo DEPOIS da tag de abertura <manifest ...>, adicione:
+  <uses-permission android:name="android.permission.INTERNET" />
+
+NÃO substitua todo o AndroidManifest.xml por este texto.

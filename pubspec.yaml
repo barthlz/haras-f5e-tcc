@@ -1,0 +1,35 @@
+name: haras_f5e
+description: Aplicativo de gestão do Haras F5E com acesso por função.
+publish_to: none
+version: 0.4.5+9
+
+environment:
+  sdk: '>=3.9.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  supabase_flutter: ^2.18.3
+  app_links: ^7.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.14.4
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/icon/haras_f5e_app.png
+
+# Opcional: regenerar os mipmaps caso altere futuramente a logo.
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: 'assets/icon/haras_f5e_app.png'
+  adaptive_icon_background: '#FFFFFF'
+  adaptive_icon_foreground: 'assets/icon/haras_f5e_foreground.png'
+  adaptive_icon_monochrome: 'assets/icon/haras_f5e_foreground.png'
+  min_sdk_android: 21
