@@ -45,20 +45,27 @@ class EmailConfirmationScreen extends StatelessWidget {
                       const SizedBox(height: 15),
                       if (verifying)
                         const SizedBox(
-                          width: 58, height: 58,
+                          width: 58,
+                          height: 58,
                           child: CircularProgressIndicator(strokeWidth: 4),
                         )
                       else
                         Icon(
-                          confirmed ? Icons.mark_email_read_rounded : Icons.error_outline,
-                          color: confirmed ? const Color(0xFF247A55) : Colors.orange.shade800,
+                          confirmed
+                              ? Icons.mark_email_read_rounded
+                              : Icons.error_outline,
+                          color: confirmed
+                              ? const Color(0xFF247A55)
+                              : Colors.orange.shade800,
                           size: 72,
                         ),
                       const SizedBox(height: 20),
                       Text(
-                        confirmed ? 'E-mail confirmado!' :
-                          verifying ? 'Confirmando seu e-mail…' :
-                          'Não foi possível confirmar automaticamente',
+                        confirmed
+                            ? 'E-mail confirmado!'
+                            : verifying
+                            ? 'Confirmando seu e-mail…'
+                            : 'Não foi possível confirmar automaticamente',
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
@@ -66,11 +73,11 @@ class EmailConfirmationScreen extends StatelessWidget {
                       Text(
                         confirmed
                             ? 'Seu endereço de e-mail foi verificado com sucesso. '
-                              'Para entrar nas áreas do Haras F5E, sua conta '
-                              'ainda precisa da aprovação do administrador.'
+                                  'Para entrar nas áreas do Haras F5E, sua conta '
+                                  'ainda precisa da aprovação do administrador.'
                             : verifying
-                                ? 'Estamos verificando o link com o Supabase.'
-                                : 'O link pode estar expirado ou já ter sido usado. '
+                            ? 'Estamos verificando o link com o Supabase.'
+                            : 'O link pode estar expirado ou já ter sido usado. '
                                   'Volte ao login e tente entrar. Se seu e-mail '
                                   'estiver confirmado, o acesso seguirá normalmente.',
                         textAlign: TextAlign.center,
@@ -88,12 +95,18 @@ class EmailConfirmationScreen extends StatelessWidget {
                         FilledButton.icon(
                           onPressed: onContinue,
                           icon: const Icon(Icons.arrow_forward),
-                          label: Text(confirmed ? 'Continuar para o aplicativo' : 'Ir para o aplicativo'),
+                          label: Text(
+                            confirmed
+                                ? 'Continuar para o aplicativo'
+                                : 'Ir para o aplicativo',
+                          ),
                         ),
                       ],
                       if (verifying)
-                        TextButton(onPressed: onContinue,
-                            child: const Text('Voltar ao aplicativo')),
+                        TextButton(
+                          onPressed: onContinue,
+                          child: const Text('Voltar ao aplicativo'),
+                        ),
                     ],
                   ),
                 ),

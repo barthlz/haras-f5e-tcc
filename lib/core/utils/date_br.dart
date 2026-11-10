@@ -19,11 +19,18 @@ String? dateBrToIso(String input) {
   final day = int.parse(dateMatch.group(br != null ? 1 : 3)!);
   final month = int.parse(dateMatch.group(2)!);
   final year = int.parse(dateMatch.group(br != null ? 3 : 1)!);
-  if (year < 1 || year > 9999 || month < 1 || month > 12 || day < 1 || day > 31) {
+  if (year < 1 ||
+      year > 9999 ||
+      month < 1 ||
+      month > 12 ||
+      day < 1 ||
+      day > 31) {
     return null;
   }
   final parsed = DateTime(year, month, day);
-  if (parsed.year != year || parsed.month != month || parsed.day != day) return null;
+  if (parsed.year != year || parsed.month != month || parsed.day != day) {
+    return null;
+  }
   return '${year.toString().padLeft(4, '0')}-'
       '${month.toString().padLeft(2, '0')}-'
       '${day.toString().padLeft(2, '0')}';

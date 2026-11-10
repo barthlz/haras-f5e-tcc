@@ -31,19 +31,23 @@ class _HarasAppState extends State<HarasApp> {
     // O Supabase Flutter valida os tokens do deep link automaticamente.
     // Este observador só decide se deve MOSTRAR a tela de confirmação.
     final appLinks = AppLinks();
-    _linkSubscription = appLinks.uriLinkStream.listen(_handleLink,
-        onError: (Object error) {
-          // Não confundir falha de leitura de links com confirmação de e-mail.
+    _linkSubscription = appLinks.uriLinkStream.listen(
+      _handleLink,
+      onError: (Object error) {
+        // Não confundir falha de leitura de links com confirmação de e-mail.
+      },
+    );
+    appLinks
+        .getInitialLink()
+        .then((uri) {
+          if (uri != null) _handleLink(uri);
+        })
+        .catchError((Object error) {
+          // O app continua permitindo login mesmo sem receber o link inicial.
         });
-    appLinks.getInitialLink().then((uri) {
-      if (uri != null) _handleLink(uri);
-    }).catchError((Object error) {
-      // O app continua permitindo login mesmo sem receber o link inicial.
-    });
     _authSubscription = Supabase.instance.client.auth.onAuthStateChange.listen(
       (state) {
-        if (_showEmailConfirmation &&
-            state.event == AuthChangeEvent.signedIn) {
+        if (_showEmailConfirmation && state.event == AuthChangeEvent.signedIn) {
           _checkConfirmedEmail();
         }
       },
@@ -60,10 +64,12 @@ class _HarasAppState extends State<HarasApp> {
     // getInitialLink e uriLinkStream podem entregar o mesmo URL.
     if (_lastConfirmationLink == uri.toString()) return;
     _lastConfirmationLink = uri.toString();
-    final error = uri.queryParameters['error'] ??
+    final error =
+        uri.queryParameters['error'] ??
         uri.queryParameters['error_code'] ??
         (uri.fragment.contains('error=') ? uri.fragment : null);
-    final hasToken = uri.queryParameters.containsKey('code') ||
+    final hasToken =
+        uri.queryParameters.containsKey('code') ||
         uri.queryParameters.containsKey('access_token') ||
         uri.fragment.contains('access_token=');
     setState(() {
@@ -77,7 +83,8 @@ class _HarasAppState extends State<HarasApp> {
       _checkConfirmedEmail();
       // Link inválido ou sessão não formada: dar uma saída visível ao usuário.
       Future<void>.delayed(const Duration(seconds: 12), () {
-        if (mounted && _showEmailConfirmation &&
+        if (mounted &&
+            _showEmailConfirmation &&
             _emailStatus == EmailConfirmationStatus.verifying) {
           setState(() => _emailStatus = EmailConfirmationStatus.failed);
         }
@@ -94,9 +101,11 @@ class _HarasAppState extends State<HarasApp> {
     try {
       final response = await auth.getUser();
       if (!mounted || !_showEmailConfirmation) return;
-      setState(() => _emailStatus = response.user?.emailConfirmedAt != null
-          ? EmailConfirmationStatus.confirmed
-          : EmailConfirmationStatus.failed);
+      setState(
+        () => _emailStatus = response.user?.emailConfirmedAt != null
+            ? EmailConfirmationStatus.confirmed
+            : EmailConfirmationStatus.failed,
+      );
     } catch (_) {
       if (mounted && _showEmailConfirmation) {
         setState(() => _emailStatus = EmailConfirmationStatus.failed);
@@ -110,7 +119,8 @@ class _HarasAppState extends State<HarasApp> {
     setState(() => _emailStatus = EmailConfirmationStatus.verifying);
     _checkConfirmedEmail();
     Future<void>.delayed(const Duration(seconds: 8), () {
-      if (mounted && _showEmailConfirmation &&
+      if (mounted &&
+          _showEmailConfirmation &&
           _emailStatus == EmailConfirmationStatus.verifying) {
         setState(() => _emailStatus = EmailConfirmationStatus.failed);
       }
@@ -188,7 +198,8 @@ class _ProfileGateState extends State<ProfileGate> {
   Future<ProfileState> _fetchProfile() async {
     final supabase = Supabase.instance.client;
     final id = supabase.auth.currentUser!.id;
-    final row = await supabase.from('profiles')
+    final row = await supabase
+        .from('profiles')
         .select('full_name, role, status')
         .eq('id', id)
         .single();
@@ -211,48 +222,80 @@ class _ProfileGateState extends State<ProfileGate> {
       future: _profileFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
         }
         if (snapshot.hasError) {
-          return Scaffold(body: Center(child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              const Text('Não foi possível consultar seu acesso.'),
-              const SizedBox(height: 8),
-              Text('${snapshot.error}', textAlign: TextAlign.center),
-              const SizedBox(height: 16),
-              FilledButton(onPressed: _reload, child: const Text('Tentar novamente')),
-              TextButton(
-                onPressed: () => Supabase.instance.client.auth.signOut(),
-                child: const Text('Sair'),
+          return Scaffold(
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('Não foi possível consultar seu acesso.'),
+                    const SizedBox(height: 8),
+                    Text('${snapshot.error}', textAlign: TextAlign.center),
+                    const SizedBox(height: 16),
+                    FilledButton(
+                      onPressed: _reload,
+                      child: const Text('Tentar novamente'),
+                    ),
+                    TextButton(
+                      onPressed: () => Supabase.instance.client.auth.signOut(),
+                      child: const Text('Sair'),
+                    ),
+                  ],
+                ),
               ),
-            ]),
-          )));
+            ),
+          );
         }
         final profile = snapshot.requireData;
         if (profile.status != 'ativo') {
           return Scaffold(
             appBar: AppBar(title: const Text('Haras F5E')),
-            body: Center(child: Padding(
-              padding: const EdgeInsets.all(28),
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Icon(profile.status == 'bloqueado' ? Icons.block : Icons.hourglass_top,
-                    size: 56, color: Colors.orange.shade800),
-                const SizedBox(height: 16),
-                Text(profile.status == 'bloqueado'
-                    ? 'Acesso bloqueado' : 'Cadastro aguardando aprovação',
-                  style: Theme.of(context).textTheme.titleLarge,
-                  textAlign: TextAlign.center),
-                const SizedBox(height: 12),
-                const Text('Um administrador precisa liberar sua conta e definir sua função.',
-                    textAlign: TextAlign.center),
-                const SizedBox(height: 18),
-                FilledButton.icon(onPressed: _reload,
-                    icon: const Icon(Icons.refresh), label: const Text('Verificar aprovação')),
-                TextButton(onPressed: () => Supabase.instance.client.auth.signOut(),
-                    child: const Text('Sair')),
-              ]),
-            )),
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(28),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      profile.status == 'bloqueado'
+                          ? Icons.block
+                          : Icons.hourglass_top,
+                      size: 56,
+                      color: Colors.orange.shade800,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      profile.status == 'bloqueado'
+                          ? 'Acesso bloqueado'
+                          : 'Cadastro aguardando aprovação',
+                      style: Theme.of(context).textTheme.titleLarge,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Um administrador precisa liberar sua conta e definir sua função.',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 18),
+                    FilledButton.icon(
+                      onPressed: _reload,
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('Verificar aprovação'),
+                    ),
+                    TextButton(
+                      onPressed: () => Supabase.instance.client.auth.signOut(),
+                      child: const Text('Sair'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           );
         }
         return HomeScreen(profile: profile, onRefreshPermissions: _reload);
