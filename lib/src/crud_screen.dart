@@ -700,7 +700,13 @@ class _RecordEditorState extends State<RecordEditor> {
             field.type == FieldType.selection) {
           data[field.key] = _references[field.key];
         } else {
-          final raw = _controllers[field.key]!.text.trim();
+          final original = _controllers[field.key]!.text;
+
+          if (original.contains('\u0000')) {
+            debugPrint('Caractere nulo detectado no campo: ${field.key}');
+          }
+
+          final raw = original.replaceAll('\u0000', '').trim();
           data[field.key] = raw.isEmpty
               ? null
               : field.type == FieldType.money

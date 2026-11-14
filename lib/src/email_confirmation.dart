@@ -4,10 +4,10 @@ import 'haras_logo.dart';
 
 // Mesmo endereço em: signUp(emailRedirectTo), Supabase Redirect URLs e
 // AndroidManifest.xml (intent-filter).
-const emailConfirmationRedirectUrl = 'br.com.f5e.haras://email-confirmado';
+const emailConfirmationRedirectUrl = 'br.com.f5e.haras.tcc://email-confirmado';
 
 bool isEmailConfirmationLink(Uri uri) =>
-    uri.scheme == 'br.com.f5e.haras' && uri.host == 'email-confirmado';
+    uri.scheme == 'br.com.f5e.haras.tcc' && uri.host == 'email-confirmado';
 
 enum EmailConfirmationStatus { verifying, confirmed, failed }
 
