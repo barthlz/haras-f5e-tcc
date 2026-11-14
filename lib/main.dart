@@ -11,15 +11,21 @@ Future<void> main() async {
   const key = String.fromEnvironment('SUPABASE_PUBLISHABLE_KEY');
 
   if (url.isEmpty || key.isEmpty) {
-    runApp(const MaterialApp(
-      home: Scaffold(
-        body: Center(child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Text('Configure SUPABASE_URL e SUPABASE_PUBLISHABLE_KEY '
-              'antes de executar o aplicativo. Consulte o README.md.'),
-        )),
+    runApp(
+      const MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Padding(
+              padding: EdgeInsets.all(24),
+              child: Text(
+                'Configure SUPABASE_URL e SUPABASE_PUBLISHABLE_KEY '
+                'antes de executar o aplicativo. Consulte o README.md.',
+              ),
+            ),
+          ),
+        ),
       ),
-    ));
+    );
     return;
   }
 

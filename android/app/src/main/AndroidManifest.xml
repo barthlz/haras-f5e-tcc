@@ -2,7 +2,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:label="Haras F5E"
+        android:label="Haras F5E TCC"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round">
@@ -33,7 +33,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="br.com.f5e.haras" android:host="email-confirmado" />
+                <data android:scheme="br.com.f5e.haras.tcc" android:host="email-confirmado" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
